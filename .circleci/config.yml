@@ -53,7 +53,6 @@ jobs:
       - run: apk add --update curl
       - run:
           name: smoke test
-          # fail intentionally
           command: |
               URL="https://bloggers.udacity.com/"  
               # Test if website exists
