@@ -14,58 +14,56 @@ commands:
               aws cloudformation delete-stack --stack-name adeleyeStack-${CIRCLE_WORKFLOW_ID:0:7}
 
 jobs:
-  create_infrastructure:
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-    docker:
-      - image: amazon/aws-cli
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-    steps:
-      - checkout
-      - run:
-          name: Create Cloudformation Stack
-          command: |
-              aws cloudformation deploy \
-                --template-file template.yml \
-                --stack-name adeleyeStack-${CIRCLE_WORKFLOW_ID:0:7} \
-                --region us-east-1
-  configure_infrastructure: 
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - checkout
-      - add_ssh_keys:
-              # You can get this ID in the section where you registered the SSH Key
-              fingerprints: ["d6:9a:1a:43:b3:ef:21:5b:e9:af:0f:34:ed:6a:c4:0a"] 
-      - run:
-          name: Install Ansible
-          command: |
-              apk add --update ansible
-      - run:
-          name: Run Playbook and Configure server
-          command: |
-              ansible-playbook -i inventory main-remote.yml
-  smoke_test:
-    docker:
-      - image: alpine:latest
-    steps:
-      - run: apk add --no-cache aws-cli
-      - run: apk add --update curl
-      - run:
-          name: smoke test
-          command: |
-              URL="https://bloggers.udacity.com/"  
-              # Test if website exists
-              if curl -s --head ${URL} 
-              then
-                return 0
-              else
-                return 1
-              fi   
-      - destroy_environment
-
-
+  # create_infrastructure:
+  #   # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+  #   # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  #   docker:
+  #     - image: amazon/aws-cli
+  #   # Add steps to the job
+  #   # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Create Cloudformation Stack
+  #         command: |
+  #             aws cloudformation deploy \
+  #               --template-file template.yml \
+  #               --stack-name adeleyeStack-${CIRCLE_WORKFLOW_ID:0:7} \
+  #               --region us-east-1
+  # configure_infrastructure: 
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     - checkout
+  #     - add_ssh_keys:
+  #             # You can get this ID in the section where you registered the SSH Key
+  #             fingerprints: ["d6:9a:1a:43:b3:ef:21:5b:e9:af:0f:34:ed:6a:c4:0a"] 
+  #     - run:
+  #         name: Install Ansible
+  #         command: |
+  #             apk add --update ansible
+  #     - run:
+  #         name: Run Playbook and Configure server
+  #         command: |
+  #             ansible-playbook -i inventory main-remote.yml
+  # smoke_test:
+  #   docker:
+  #     - image: alpine:latest
+  #   steps:
+  #     - run: apk add --no-cache aws-cli
+  #     - run: apk add --update curl
+  #     - run:
+  #         name: smoke test
+  #         command: |
+  #             URL="https://bloggers.udacity.com/"  
+  #             # Test if website exists
+  #             if curl -s --head ${URL} 
+  #             then
+  #               return 0
+  #             else
+  #               return 1
+  #             fi   
+  #     - destroy_environment
   # Job 1
   # Executes the bucket.yml - Deploy an S3 bucket, and interface with that bucket to synchronize the files between local and the bucket.
   # Note that the `--parameter-overrides` let you specify a value that override parameter value in the bucket.yml template file.
@@ -141,7 +139,7 @@ jobs:
 
 # Invoke jobs via workflows
 workflows:
-  create_infrastructure-workflow:
+  infrastructure-workflow:
     jobs:
       # - create_infrastructure
       # - configure_infrastructure:
