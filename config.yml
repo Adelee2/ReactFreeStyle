@@ -143,13 +143,13 @@ jobs:
 workflows:
   create_infrastructure-workflow:
     jobs:
-      - create_infrastructure
-      - configure_infrastructure:
-          requires:
-            - create_infrastructure
-      - smoke_test:
-          requires:
-            - configure_infrastructure
+      # - create_infrastructure
+      # - configure_infrastructure:
+      #     requires:
+      #       - create_infrastructure
+      # - smoke_test:
+      #     requires:
+      #       - configure_infrastructure
       - create_and_deploy_front_end
       - promote_to_production:
           requires: 
